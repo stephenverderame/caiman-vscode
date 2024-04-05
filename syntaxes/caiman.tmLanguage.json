@@ -13,8 +13,10 @@
 			"match": "extern|pure"
 		},
 		{
-			"name": "keyword.other.caiman",
-			"match": "node|none|input\\s*\\("
+			"include": "#keywords"
+		},
+		{
+			"include": "#imports"
 		},
 		{
 			"include": "#functions"
@@ -22,9 +24,6 @@
 		{
 			"name": "keyword.other.caiman",
 			"match": "impls|let|const|val|tmln|fn|sptl|pipeline|feq|usable|saved|need|dead|var"
-		},
-		{
-			"include": "#keywords"
 		},
 		{
 			"include": "#constants"
@@ -37,6 +36,9 @@
 		},
 		{
 			"include": "#flags"
+		},
+		{
+			"include": "#hole"
 		},
 		{
 			"include": "#variables"
@@ -63,6 +65,10 @@
 				{
 					"name": "keyword.control.other.caiman",
 					"match": "^#version"
+				},
+				{
+					"name": "keyword.other.caiman",
+					"match": "node|none|input|output"
 				}
 			]
 		},
@@ -123,7 +129,7 @@
 					"match": "\\b(i32|i64|f32|f64|bool|BufferSpace|Event)\\b"
 				},
 				{
-					"match": "(\\(|,|\\[|\\b)([a-zA-Z][a-zA-Z_0-9]*)\\s*:\\s*((\\[|\\]|[a-zA-Z0-9_]|\\s|;)+)\\s*(,|\\)|=|<-|\\')",
+					"match": "(\\(|,|\\[|\\b)([a-zA-Z][a-zA-Z_0-9]*)\\s*:\\s*((\\[|\\]|[a-zA-Z0-9_]|\\s|;)+)\\s*(,|\\)|=|<-|\\'|:-)",
 					"captures": {
 						"2": {
 							"name": "variable.other.caiman"
@@ -149,7 +155,7 @@
 					}
 				},
 				{
-					"match": "->\\s*([a-zA-Z0-9_]+\\s*:)\\s*([A-Za-z0-9_]+)",
+					"match": "->\\s*([a-zA-Z0-9_]+\\s*:)?\\s*([A-Za-z0-9_]+)",
 					"captures": {
 						"1": {
 							"name": "variable.other.caiman"
@@ -192,7 +198,7 @@
 			"patterns": [
 				{
 					"name": "constant.character.escape.tag.caiman",
-					"match": "@in|@out|@|\\binput\\b|\\boutput\\b"
+					"match": "@in|@out|@"
 				}
 			]
 		},
@@ -208,9 +214,13 @@
 							"name": "markup.underline.caiman"
 						}
 					}
-				},
+				}
+			]
+		},
+		"function_names": {
+			"patterns": [
 				{
-					"match": "\\b(encode_event|submit_event|sync_event)\\s*\\(",
+					"match": "\\b(encode_event|submit_event|sync_event|alloc|free|split)\\b",
 					"captures": {
 						"0": {
 							"name": "support.function.caiman"
@@ -219,13 +229,17 @@
 							"name": "markup.underline.caiman"
 						}
 					}
+				},
+				{
+					"match": "[a-z][a-zA-Z0-9_]*",
+					"name": "entity.name.function.caiman"
 				}
 			]
 		},
 		"functions": {
 			"patterns": [
 				{
-					"match": "(impls)\\s*(([a-z][a-zA-Z0-9_]*),)?\\s*(([a-z][a-zA-Z0-9_]*),)?\\s*([a-z][a-zA-Z0-9_]*)\\s*({|$)",
+					"match": "(impls)\\s*(([a-z][a-zA-Z0-9_]*),)?\\s*(([a-z][a-zA-Z0-9_]*),)?\\s*(([a-z][a-zA-Z0-9_]*))\\s*({|$)",
 					"captures": {
 						"1": {
 							"name": "keyword.other.caiman"
@@ -242,7 +256,24 @@
 					}
 				},
 				{
-					"match": "(pipeline|feq)\\s+([a-zA-Z][a-zA-Z0-9_]*)",
+					"match": "(pipeline)\\s+(([a-zA-Z][a-zA-Z0-9_]*))(\\s|\\r|\\n)*{(\\s|\\r|\\n)*([a-zA-Z][a-zA-Z0-9_]*)\\b",
+					"captures": {
+						"1": {
+							"name": "keyword.other.caiman"
+						},
+						"3": {
+							"name": "entity.name.function.caiman"
+						},
+						"2": {
+							"name": "markup.italic.caiman"
+						},
+						"6": {
+							"name": "entity.name.function.caiman"
+						}
+					}
+				},
+				{
+					"match": "(feq)\\s+([a-zA-Z][a-zA-Z0-9_]*)\\b",
 					"captures": {
 						"1": {
 							"name": "keyword.other.caiman"
@@ -253,18 +284,29 @@
 					}
 				},
 				{
-					"match": "([a-z][a-zA-Z0-9_]*)(\\'<[\\s,\\w\\d]+>)?\\s*\\(",
+					"match": "([a-z][a-zA-Z0-9_]*)\\s*(\\'(<[\\s,\\w\\d]+>)|(\\'[a-zA-Z0-9_ ,;\\]\\[]+))?\\s*\\(",
 					"captures": {
 						"1": {
-							"name": "entity.name.function"
+							"patterns": [
+								{
+									"include": "#function_names"
+								}
+							]
 						},
-						"2": {
+						"3": {
 							"patterns": [
 								{
 									"include": "#variables"
 								},
 								{
 									"include": "#constants"
+								}
+							]
+						},
+						"4": {
+							"patterns": [
+								{
+									"include": "#custom_type"
 								}
 							]
 						}
@@ -288,6 +330,33 @@
 						},
 						"5": {
 							"name": "markup.underline.caiman"
+						}
+					}
+				}
+			]
+		},
+		"imports": {
+			"patterns": [
+				{
+					"match": "(^|\\b)(import)\\s*([a-zA-Z][a-zA-Z0-9_]*)",
+					"captures": {
+						"2": {
+							"name": "keyword.other.caiman"
+						},
+						"3": {
+							"name": "string.quoted.double"
+						}
+					}
+				}
+			]
+		},
+		"hole": {
+			"patterns": [
+				{
+					"match": "(\\?|\\?\\?\\?)[^\\?]",
+					"captures": {
+						"1": {
+							"name": "markup.heading.caiman"
 						}
 					}
 				}
