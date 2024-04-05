@@ -1,0 +1,298 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "Caiman",
+	"patterns": [
+		{
+			"include": "#tagop"
+		},
+		{
+			"include": "#builtins"
+		},
+		{
+			"name": "storage.modifier.caiman",
+			"match": "extern|pure"
+		},
+		{
+			"name": "keyword.other.caiman",
+			"match": "node|none|input\\s*\\("
+		},
+		{
+			"include": "#functions"
+		},
+		{
+			"name": "keyword.other.caiman",
+			"match": "impls|let|const|val|tmln|fn|sptl|pipeline|feq|usable|saved|need|dead|var"
+		},
+		{
+			"include": "#keywords"
+		},
+		{
+			"include": "#constants"
+		},
+		{
+			"include": "#support"
+		},
+		{
+			"include": "#types"
+		},
+		{
+			"include": "#flags"
+		},
+		{
+			"include": "#variables"
+		},
+		{
+			"name": "entity.other.inherited-class",
+			"begin": "#",
+			"end": "\n"
+		},
+		{
+			"include": "#comments"
+		},
+		{
+			"include": "#strings"
+		}
+	],
+	"repository": {
+		"keywords": {
+			"patterns": [
+				{
+					"name": "keyword.control.caiman",
+					"match": "(\\b|^)(if|else|returns|encode-begin|encode|submit|await)(\\b|$)"
+				},
+				{
+					"name": "keyword.control.other.caiman",
+					"match": "^#version"
+				}
+			]
+		},
+		"constants": {
+			"patterns": [
+				{
+					"name": "constant.language.caiman",
+					"match": "\\b(true|false|cpu|gpu)\\b"
+				},
+				{
+					"name": "constant.numeric.caiman",
+					"match": "\\d+(\\.\\d+)?"
+				}
+			]
+		},
+		"strings": {
+			"name": "string.quoted.double.caiman",
+			"begin": "\"",
+			"end": "\"",
+			"patterns": [
+				{
+					"name": "constant.character.escape.caiman",
+					"match": "\\\\."
+				}
+			]
+		},
+		"comments": {
+			"patterns": [
+				{
+					"name": "comment.line.double-slash.caiman",
+					"begin": "//.*",
+					"end": "\n"
+				},
+				{
+					"name": "comment.block.caiman",
+					"begin": "/\\*",
+					"end": "\\*/"
+				},
+				{
+					"name": "comment.block.documentation",
+					"begin": "/\\*\\*",
+					"end": "\\*/"
+				}
+			]
+		},
+		"support": {
+			"patterns": [
+				{
+					"name": "support.function.caiman",
+					"match": "\\b(encode_event|submit_event|sync_event)\\b"
+				}
+			]
+		},
+		"types": {
+			"patterns": [
+				{
+					"name": "entity.name.class.caiman",
+					"match": "\\b(i32|i64|f32|f64|bool|BufferSpace|Event)\\b"
+				},
+				{
+					"match": "(\\(|,|\\[|\\b)([a-zA-Z][a-zA-Z_0-9]*)\\s*:\\s*((\\[|\\]|[a-zA-Z0-9_]|\\s|;)+)\\s*(,|\\)|=|<-|\\')",
+					"captures": {
+						"2": {
+							"name": "variable.other.caiman"
+						},
+						"3": {
+							"patterns": [
+								{
+									"include": "#custom_type"
+								}
+							]
+						}
+					}
+				},
+				{
+					"match": "\\b(type)\\s*([a-zA-Z][a-zA-Z0-9_]*)\\b",
+					"captures": {
+						"1": {
+							"name": "keyword.other.caiman"
+						},
+						"2": {
+							"name": "entity.name.class.caiman"
+						}
+					}
+				},
+				{
+					"match": "->\\s*([a-zA-Z0-9_]+\\s*:)\\s*([A-Za-z0-9_]+)",
+					"captures": {
+						"1": {
+							"name": "variable.other.caiman"
+						},
+						"2": {
+							"patterns": [
+								{
+									"include": "#custom_type"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		"variables": {
+			"patterns": [
+				{
+					"name": "variable.other.caiman",
+					"match": "[a-zA-Z][a-zA-Z0-9_]*"
+				}
+			]
+		},
+		"custom_type": {
+			"patterns": [
+				{
+					"name": "variable.other.caiman",
+					"match": "[A-Z][A-Z0-9_]*\\b"
+				},
+				{
+					"name": "entity.name.class.caiman",
+					"match": "\\b([a-zA-Z][a-zA-Z0-9_]*)\\b"
+				},
+				{
+					"include": "#constants"
+				}
+			]
+		},
+		"tagop": {
+			"patterns": [
+				{
+					"name": "constant.character.escape.tag.caiman",
+					"match": "@in|@out|@|\\binput\\b|\\boutput\\b"
+				}
+			]
+		},
+		"builtins": {
+			"patterns": [
+				{
+					"match": "\\.(copy|call)\\s*\\[",
+					"captures": {
+						"0": {
+							"name": "support.function.caiman"
+						},
+						"1": {
+							"name": "markup.underline.caiman"
+						}
+					}
+				},
+				{
+					"match": "\\b(encode_event|submit_event|sync_event)\\s*\\(",
+					"captures": {
+						"0": {
+							"name": "support.function.caiman"
+						},
+						"1": {
+							"name": "markup.underline.caiman"
+						}
+					}
+				}
+			]
+		},
+		"functions": {
+			"patterns": [
+				{
+					"match": "(impls)\\s*(([a-z][a-zA-Z0-9_]*),)?\\s*(([a-z][a-zA-Z0-9_]*),)?\\s*([a-z][a-zA-Z0-9_]*)\\s*({|$)",
+					"captures": {
+						"1": {
+							"name": "keyword.other.caiman"
+						},
+						"3": {
+							"name": "entity.name.function.caiman"
+						},
+						"5": {
+							"name": "entity.name.function.caiman"
+						},
+						"6": {
+							"name": "entity.name.function.caiman"
+						}
+					}
+				},
+				{
+					"match": "(pipeline|feq)\\s+([a-zA-Z][a-zA-Z0-9_]*)",
+					"captures": {
+						"1": {
+							"name": "keyword.other.caiman"
+						},
+						"2": {
+							"name": "entity.name.function.caiman"
+						}
+					}
+				},
+				{
+					"match": "([a-z][a-zA-Z0-9_]*)(\\'<[\\s,\\w\\d]+>)?\\s*\\(",
+					"captures": {
+						"1": {
+							"name": "entity.name.function"
+						},
+						"2": {
+							"patterns": [
+								{
+									"include": "#variables"
+								},
+								{
+									"include": "#constants"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		"flags": {
+			"patterns": [
+				{
+					"match": "(((alignment_bits|byte_size))\\s*=)|((map_read|map_write|storage|uniform|copy_dst|copy_src))",
+					"captures": {
+						"2": {
+							"name": "variable.other.caiman"
+						},
+						"3": {
+							"name": "markup.underline.caiman"
+						},
+						"4": {
+							"name": "variable.other.caiman"
+						},
+						"5": {
+							"name": "markup.underline.caiman"
+						}
+					}
+				}
+			]
+		}
+	},
+	"scopeName": "source.cm"
+}

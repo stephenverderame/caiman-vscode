@@ -1,0 +1,25 @@
+{
+  "name": "caiman-lang",
+  "displayName": "Caiman Lang",
+  "description": "Caiman syntax highlighting and language support",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.88.0"
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [{
+      "id": "caiman",
+      "aliases": ["Caiman", "caiman"],
+      "extensions": [".cm"],
+      "configuration": "./language-configuration.json"
+    }],
+    "grammars": [{
+      "language": "caiman",
+      "scopeName": "source.cm",
+      "path": "./syntaxes/caiman.tmLanguage.json"
+    }]
+  }
+}
