@@ -3,7 +3,7 @@
 	"description": "Language server and syntax highlighting for Caiman",
 	"author": "Capra",
 	"license": "MIT",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"categories": [],
 	"keywords": [
 		"multi-root ready"

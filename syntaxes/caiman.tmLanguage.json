@@ -68,7 +68,7 @@
 				},
 				{
 					"name": "keyword.other.caiman",
-					"match": "node|none|input|output"
+					"match": "node|none|input|output|usable|saved|need|dead"
 				}
 			]
 		},
@@ -81,6 +81,17 @@
 				{
 					"name": "constant.numeric.caiman",
 					"match": "\\d+(\\.\\d+)?"
+				},
+				{
+					"match": "\\b((_dim\\d))",
+					"captures": {
+						"1": {
+							"name": "variable.other.caiman"
+						},
+						"2": {
+							"name": "markup.underline.caiman"
+						}
+					}
 				}
 			]
 		},
@@ -126,10 +137,10 @@
 			"patterns": [
 				{
 					"name": "entity.name.class.caiman",
-					"match": "\\b(i32|i64|f32|f64|bool|BufferSpace|Event)\\b"
+					"match": "\\b(i32|i64|f32|f64|bool|BufferSpace|Event|Encoder|Future|Fence)\\b"
 				},
 				{
-					"match": "(\\(|,|\\[|\\b)([a-zA-Z][a-zA-Z_0-9]*)\\s*:\\s*((\\[|\\]|[a-zA-Z0-9_]|\\s|;)+)\\s*(,|\\)|=|<-|\\'|:-)",
+					"match": "(\\(|,|\\[|\\b)([a-zA-Z][a-zA-Z_0-9]*)\\s*:\\s*((\\[|\\]|[a-zA-Z0-9_]|\\s|;|\\')+)\\s*(,|\\)|=|<-|:-)",
 					"captures": {
 						"2": {
 							"name": "variable.other.caiman"
@@ -155,19 +166,19 @@
 					}
 				},
 				{
-					"match": "->\\s*([a-zA-Z0-9_]+\\s*:)?\\s*(([A-Za-z0-9_]+)|(\\(.+?\\)))",
+					"match": "->\\s*(([a-zA-Z0-9_]+\\s*):)?\\s*(([A-Za-z0-9_']+)|(\\(.+\\)))",
 					"captures": {
-						"1": {
+						"2": {
 							"name": "variable.other.caiman"
 						},
-						"3": {
+						"4": {
 							"patterns": [
 								{
 									"include": "#custom_type"
 								}
 							]
 						},
-						"4": {
+						"5": {
 							"patterns": [
 								{
 									"include": "#custom_type"
@@ -189,12 +200,47 @@
 		"custom_type": {
 			"patterns": [
 				{
-					"name": "variable.other.caiman",
-					"match": "[A-Z][A-Z0-9_]*\\b"
+					"include": "#tagop"
 				},
 				{
-					"name": "entity.name.class.caiman",
-					"match": "\\b([a-zA-Z][a-zA-Z0-9_]*)\\b"
+					"match": "(val|tmln|sptl)\\s*.\\s*([a-zA-Z][a-zA-Z0-9_]*)",
+					"captures": {
+						"1": {
+							"name": "keyword.other.caiman"
+						},
+						"2": {
+							"name": "variable.other.caiman"
+						}
+					}
+				},
+				{
+					"include": "#keywords"
+				},
+				{
+					"include": "#flags"
+				},
+				{
+					"name": "variable.other.caiman",
+					"match": ";|\\.\\s*[A-Z][A-Z0-9_]*\\b"
+				},
+				{
+					"match": "\\b([a-zA-Z][a-zA-Z0-9_]*)\\b\\s*:",
+					"captures": {
+						"1": {
+							"name": "variable.other.caiman"
+						}
+					}
+				},
+				{
+					"match": "\\b([a-zA-Z][a-zA-Z0-9_]*)(\\s*'\\s*([a-zA-Z0-9_]*))?\\b",
+					"captures": {
+						"1": {
+							"name": "entity.name.class.caiman"
+						},
+						"3": {
+							"name": "entity.name.class.caiman"
+						}
+					}
 				},
 				{
 					"include": "#constants"
